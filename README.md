@@ -1,36 +1,34 @@
 # Nick's Financial Command Center
 
-A local-first, phone-friendly personal budget and debt-payoff PWA designed for GitHub Pages.
+A local-first, phone-first personal finance dashboard designed for GitHub Pages.
 
-## Security model
-
-This repo contains code only. Personal finance data is stored in the browser's localStorage on the device using the app.
-
-**Never commit:**
-- bank usernames or passwords
-- Plaid access tokens
-- full account/card numbers
-- SSNs or tax IDs
-- exported personal backup JSON files
-
-## Features
+## V2 features
 - Safe-to-spend calculation
 - Weekly flexible budget
-- Bills and due dates
-- Debt avalanche / snowball prioritization
-- Payoff estimate using balances, APRs, minimums, and extra payment
-- Debt progress tracking
-- Money XP / simple gamification
-- JSON backup and restore
+- Bills and protected cash cushion
+- Debt avalanche / snowball payoff simulator
+- Debt progress snapshots and trend chart
+- Spending transaction ledger
+- 6-month income vs spending chart
+- Current-month category breakdown
+- Top merchants
+- Daily burn rate and projected monthly spending
+- Savings-rate estimate from recorded income
+- Optional monthly category budgets
+- JSON backup/restore
+- CSV transaction import/export + template
+- Money XP / progress system
 - Installable PWA
 
-## Publish with GitHub Pages
-1. Create a new repository.
-2. Upload the files in this folder to the repository root.
-3. In GitHub: Settings → Pages.
-4. Set Source to `Deploy from a branch`.
-5. Choose the `main` branch and `/ (root)`.
-6. Save, then open the Pages URL on your phone and use **Add to Home screen** / **Install app**.
+## Privacy model
+The repository contains only app code. Personal financial data is stored in the browser's local storage on the device where the app is used.
 
-## Notes
-The payoff calculator is an estimate. It assumes balances and APRs stay fixed except for payments and monthly interest, and it does not model new purchases, fees, promotional APR expiration, or payment timing.
+Do **not** put bank credentials, access tokens, full card numbers, SSNs, or exported personal backups into the GitHub repository.
+
+CSV/JSON exports contain personal financial information. Treat those files as private.
+
+## GitHub Pages
+Serve the repository root from the `main` branch with GitHub Pages.
+
+## Updating
+Replace the app files with newer versions. V2 automatically checks for V1 browser data (`nfc-v1`) and migrates it into the V2 state when opened on the same browser/origin.
