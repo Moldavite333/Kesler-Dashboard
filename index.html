@@ -36,6 +36,12 @@
           </article>
         </div>
 
+        <div class="grid-3">
+          <article class="card mini-stat-card"><span>THIS MONTH</span><strong id="monthSpend">$0</strong><small>spending</small></article>
+          <article class="card mini-stat-card"><span>MONTHLY NET</span><strong id="monthNet">$0</strong><small>income minus spending</small></article>
+          <article class="card mini-stat-card"><span>SAVINGS RATE</span><strong id="savingsRate">—</strong><small>of recorded income</small></article>
+        </div>
+
         <div class="grid-2">
           <article class="card">
             <div class="card-head"><div class="card-label">NEXT 7 DAYS</div><button class="text-btn" data-nav="bills">View all</button></div>
@@ -48,6 +54,11 @@
             <div class="muted" id="weeklyRemaining">$0 remaining</div>
           </article>
         </div>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">SPENDING PULSE</div><button class="text-btn" data-nav="spending">Open insights</button></div>
+          <div id="dashboardSpendingPulse" class="pulse-grid"></div>
+        </article>
 
         <article class="card">
           <div class="card-head"><div class="card-label">PAYOFF MISSION</div><button class="text-btn" data-nav="debt">Open plan</button></div>
@@ -66,8 +77,55 @@
         </article>
       </section>
 
+      <section id="spending" class="page">
+        <div class="section-title"><h2>Spending & Insights</h2><p>See where the money actually went — not just where you hoped it went.</p></div>
+        <div class="summary-strip">
+          <div><span>Income</span><strong id="spendIncome">$0</strong></div>
+          <div><span>Spent</span><strong id="spendExpenses">$0</strong></div>
+          <div><span>Net</span><strong id="spendNet">$0</strong></div>
+          <div><span>Projected</span><strong id="spendProjected">$0</strong></div>
+        </div>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">6-MONTH CASH FLOW</div><span class="muted tiny">income vs spending</span></div>
+          <div id="cashflowChart" class="chart-wrap"></div>
+        </article>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-label">SPENDING BY CATEGORY</div>
+            <div id="categoryChart" class="category-chart"></div>
+          </article>
+          <article class="card">
+            <div class="card-label">MONTHLY PACE</div>
+            <div id="paceStats" class="data-stack"></div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">TOP MERCHANTS</div><span class="muted tiny">current month</span></div>
+          <div id="merchantList" class="list"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">TRANSACTIONS</div><button class="text-btn" id="addTransactionTop">+ Add</button></div>
+          <div class="filters">
+            <select id="transactionMonth"></select>
+            <select id="transactionCategory"><option value="all">All categories</option></select>
+          </div>
+          <div id="transactionList" class="transaction-list"></div>
+          <button class="secondary full" id="addTransactionBtn">+ Add transaction</button>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">DEBT TREND</div><button class="text-btn" id="quickSnapshot">Add snapshot</button></div>
+          <div id="debtTrendChart" class="chart-wrap compact"></div>
+          <div id="historyList"></div>
+        </article>
+      </section>
+
       <section id="budget" class="page">
-        <div class="section-title"><h2>Budget</h2><p>Keep the weekly number stupidly obvious.</p></div>
+        <div class="section-title"><h2>Budget</h2><p>Keep the weekly number stupidly obvious, then control the categories underneath it.</p></div>
         <article class="card form-card">
           <label>Weekly flexible budget <input id="weeklyBudgetInput" type="number" min="0" step="1" /></label>
           <label>Spent this week <input id="weeklySpentInput" type="number" min="0" step="0.01" /></label>
@@ -75,9 +133,21 @@
           <label>Protected cash cushion <input id="cushionInput" type="number" min="0" step="1" /></label>
           <button class="primary" id="saveBudget">Save budget</button>
         </article>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">MONTHLY CATEGORY LIMITS</div><span class="muted tiny">optional</span></div>
+          <div id="categoryBudgetInputs" class="budget-category-grid"></div>
+          <button class="primary full" id="saveCategoryBudgets">Save category limits</button>
+        </article>
+
+        <article class="card">
+          <div class="card-label">CATEGORY STATUS</div>
+          <div id="categoryBudgetStatus"></div>
+        </article>
+
         <article class="card">
           <div class="card-label">WHAT SAFE TO SPEND MEANS</div>
-          <p class="plain">Checking balance minus bills due before your next paycheck minus your protected cash cushion. It is deliberately conservative. If a bill is already paid, mark it paid so the number updates.</p>
+          <p class="plain">Checking balance minus bills due in the next 14 days minus your protected cash cushion. It is deliberately conservative. If a bill is already paid, mark it paid so the number updates.</p>
         </article>
       </section>
 
@@ -107,25 +177,18 @@
         <button class="secondary full" id="addBillBtn">+ Add bill</button>
       </section>
 
-      <section id="history" class="page">
-        <div class="section-title"><h2>Progress</h2><p>Proof that the boring stuff is working.</p></div>
-        <article class="card form-card">
-          <label>Current debt total <input id="snapshotDebt" type="number" min="0" step="0.01" /></label>
-          <label>Note <input id="snapshotNote" type="text" placeholder="Payday, bonus, paid off Citi…" /></label>
-          <button class="primary" id="addSnapshot">Add snapshot</button>
-        </article>
-        <div id="historyList"></div>
-      </section>
-
       <section id="settings" class="page">
         <div class="section-title"><h2>Settings & Backup</h2><p>Your data stays in this browser unless you export it.</p></div>
         <article class="card">
           <div class="card-label">SECURITY MODEL</div>
-          <p class="plain">This app stores budgeting data locally on your device. Do not put bank usernames, passwords, Plaid tokens, card numbers, Social Security numbers, or other secrets into this app or its GitHub repository.</p>
+          <p class="plain">This app stores budgeting data locally on your device. Do not put bank usernames, passwords, Plaid tokens, full card numbers, Social Security numbers, or other secrets into this app or its GitHub repository.</p>
         </article>
         <article class="card button-stack">
-          <button class="secondary" id="exportBtn">Export backup (.json)</button>
+          <button class="secondary" id="exportBtn">Export full backup (.json)</button>
           <label class="secondary file-label">Import backup <input id="importInput" type="file" accept="application/json" hidden /></label>
+          <button class="secondary" id="exportTransactionsBtn">Export transactions (.csv)</button>
+          <label class="secondary file-label">Import transactions (.csv) <input id="importTransactionsInput" type="file" accept="text/csv,.csv" hidden /></label>
+          <button class="secondary" id="csvTemplateBtn">Download CSV template</button>
           <button class="danger" id="resetBtn">Reset all local data</button>
         </article>
       </section>
@@ -133,10 +196,10 @@
 
     <nav class="bottom-nav" aria-label="Main navigation">
       <button data-nav="dashboard" class="active"><span>⌂</span>Home</button>
+      <button data-nav="spending"><span>▥</span>Spending</button>
       <button data-nav="budget"><span>$</span>Budget</button>
       <button data-nav="debt"><span>↘</span>Debt</button>
       <button data-nav="bills"><span>▣</span>Bills</button>
-      <button data-nav="history"><span>▤</span>Progress</button>
     </nav>
   </div>
 
@@ -161,6 +224,31 @@
       <label>Due date <input id="billDue" required type="date" /></label>
       <label class="check"><input id="billPaid" type="checkbox" /> Paid / already accounted for</label>
       <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="saveBillBtn" class="primary">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="transactionDialog">
+    <form method="dialog" id="transactionForm" class="dialog-form">
+      <h3>Add transaction</h3>
+      <input type="hidden" id="transactionId" />
+      <div class="inline-fields">
+        <label>Date <input id="transactionDate" required type="date" /></label>
+        <label>Type <select id="transactionType"><option value="expense">Expense</option><option value="income">Income</option></select></label>
+      </div>
+      <label>Merchant / source <input id="transactionMerchantInput" required placeholder="King Soopers, paycheck, gas…" /></label>
+      <label>Category <select id="transactionCategoryInput"></select></label>
+      <label>Amount <input id="transactionAmount" required type="number" min="0" step="0.01" /></label>
+      <label>Note <input id="transactionNote" placeholder="Optional" /></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="saveTransactionBtn" class="primary">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="snapshotDialog">
+    <form method="dialog" id="snapshotForm" class="dialog-form">
+      <h3>Add debt snapshot</h3>
+      <label>Current debt total <input id="snapshotDebt" type="number" min="0" step="0.01" /></label>
+      <label>Note <input id="snapshotNote" type="text" placeholder="Payday, bonus, paid off Citi…" /></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="addSnapshot" class="primary">Save snapshot</button></div>
     </form>
   </dialog>
 
