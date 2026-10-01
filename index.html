@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Nick's Financial Command Center</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">FINANCIAL COMMAND CENTER</div>
+        <h1>Nick's Money Dashboard</h1>
+      </div>
+      <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+    </header>
+
+    <main>
+      <section id="dashboard" class="page active">
+        <div class="hero-grid">
+          <article class="card hero-card">
+            <div class="card-label">SAFE TO SPEND</div>
+            <div class="hero-money" id="safeToSpend">$0</div>
+            <div class="muted" id="safeToSpendSub">after protected bills and cushion</div>
+            <div class="meter"><span id="safeMeter"></span></div>
+          </article>
+          <article class="card">
+            <div class="card-label">DEBT ATTACK</div>
+            <div class="stat-line"><strong id="totalDebt">$0</strong><span>remaining</span></div>
+            <div class="meter"><span id="debtMeter"></span></div>
+            <div class="muted" id="debtProgressText">Add your starting debt to track progress.</div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><div class="card-label">NEXT 7 DAYS</div><button class="text-btn" data-nav="bills">View all</button></div>
+            <div id="upcomingBills" class="list"></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><div class="card-label">THIS WEEK</div><button class="text-btn" data-nav="budget">Budget</button></div>
+            <div class="big-stat"><span id="weeklySpent">$0</span><small>spent of <span id="weeklyBudget">$0</span></small></div>
+            <div class="meter"><span id="budgetMeter"></span></div>
+            <div class="muted" id="weeklyRemaining">$0 remaining</div>
+          </article>
+        </div>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">PAYOFF MISSION</div><button class="text-btn" data-nav="debt">Open plan</button></div>
+          <div id="payoffMission" class="mission"></div>
+        </article>
+
+        <article class="card game-card">
+          <div class="card-head"><div class="card-label">MONEY XP</div><span class="level" id="levelBadge">Level 1</span></div>
+          <div class="xp-row"><strong id="xpTotal">0 XP</strong><span id="xpToNext">100 to next level</span></div>
+          <div class="meter"><span id="xpMeter"></span></div>
+          <div class="quick-actions">
+            <button class="chip" data-xp="5">+ No-spend day</button>
+            <button class="chip" data-xp="10">+ Extra debt payment</button>
+            <button class="chip" data-xp="5">+ Stayed under budget</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="budget" class="page">
+        <div class="section-title"><h2>Budget</h2><p>Keep the weekly number stupidly obvious.</p></div>
+        <article class="card form-card">
+          <label>Weekly flexible budget <input id="weeklyBudgetInput" type="number" min="0" step="1" /></label>
+          <label>Spent this week <input id="weeklySpentInput" type="number" min="0" step="0.01" /></label>
+          <label>Checking balance <input id="checkingInput" type="number" step="0.01" /></label>
+          <label>Protected cash cushion <input id="cushionInput" type="number" min="0" step="1" /></label>
+          <button class="primary" id="saveBudget">Save budget</button>
+        </article>
+        <article class="card">
+          <div class="card-label">WHAT SAFE TO SPEND MEANS</div>
+          <p class="plain">Checking balance minus bills due before your next paycheck minus your protected cash cushion. It is deliberately conservative. If a bill is already paid, mark it paid so the number updates.</p>
+        </article>
+      </section>
+
+      <section id="debt" class="page">
+        <div class="section-title"><h2>Debt Attack</h2><p>APR math with a visible finish line.</p></div>
+        <article class="card form-card">
+          <div class="inline-fields">
+            <label>Strategy
+              <select id="strategySelect"><option value="avalanche">Avalanche — highest APR first</option><option value="snowball">Snowball — smallest balance first</option></select>
+            </label>
+            <label>Extra each month <input id="extraPayment" type="number" min="0" step="1" /></label>
+          </div>
+          <label>Original total debt <input id="startingDebt" type="number" min="0" step="1" /></label>
+          <button class="primary" id="saveDebtSettings">Save plan settings</button>
+        </article>
+        <div id="debtList"></div>
+        <button class="secondary full" id="addDebtBtn">+ Add debt</button>
+        <article class="card" id="simulationCard">
+          <div class="card-label">PROJECTED PAYOFF</div>
+          <div id="simulation"></div>
+        </article>
+      </section>
+
+      <section id="bills" class="page">
+        <div class="section-title"><h2>Bills</h2><p>Protect the stuff that has to get paid first.</p></div>
+        <div id="billsList"></div>
+        <button class="secondary full" id="addBillBtn">+ Add bill</button>
+      </section>
+
+      <section id="history" class="page">
+        <div class="section-title"><h2>Progress</h2><p>Proof that the boring stuff is working.</p></div>
+        <article class="card form-card">
+          <label>Current debt total <input id="snapshotDebt" type="number" min="0" step="0.01" /></label>
+          <label>Note <input id="snapshotNote" type="text" placeholder="Payday, bonus, paid off Citi…" /></label>
+          <button class="primary" id="addSnapshot">Add snapshot</button>
+        </article>
+        <div id="historyList"></div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="section-title"><h2>Settings & Backup</h2><p>Your data stays in this browser unless you export it.</p></div>
+        <article class="card">
+          <div class="card-label">SECURITY MODEL</div>
+          <p class="plain">This app stores budgeting data locally on your device. Do not put bank usernames, passwords, Plaid tokens, card numbers, Social Security numbers, or other secrets into this app or its GitHub repository.</p>
+        </article>
+        <article class="card button-stack">
+          <button class="secondary" id="exportBtn">Export backup (.json)</button>
+          <label class="secondary file-label">Import backup <input id="importInput" type="file" accept="application/json" hidden /></label>
+          <button class="danger" id="resetBtn">Reset all local data</button>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button data-nav="dashboard" class="active"><span>⌂</span>Home</button>
+      <button data-nav="budget"><span>$</span>Budget</button>
+      <button data-nav="debt"><span>↘</span>Debt</button>
+      <button data-nav="bills"><span>▣</span>Bills</button>
+      <button data-nav="history"><span>▤</span>Progress</button>
+    </nav>
+  </div>
+
+  <dialog id="debtDialog">
+    <form method="dialog" id="debtForm" class="dialog-form">
+      <h3>Add debt</h3>
+      <input type="hidden" id="debtId" />
+      <label>Name <input id="debtName" required placeholder="Citi card" /></label>
+      <label>Balance <input id="debtBalance" required type="number" min="0" step="0.01" /></label>
+      <label>APR % <input id="debtApr" required type="number" min="0" step="0.01" /></label>
+      <label>Minimum payment <input id="debtMin" required type="number" min="0" step="0.01" /></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="saveDebtBtn" class="primary">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="billDialog">
+    <form method="dialog" id="billForm" class="dialog-form">
+      <h3>Add bill</h3>
+      <input type="hidden" id="billId" />
+      <label>Name <input id="billName" required placeholder="Mortgage" /></label>
+      <label>Amount <input id="billAmount" required type="number" min="0" step="0.01" /></label>
+      <label>Due date <input id="billDue" required type="date" /></label>
+      <label class="check"><input id="billPaid" type="checkbox" /> Paid / already accounted for</label>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Cancel</button><button value="default" id="saveBillBtn" class="primary">Save</button></div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
