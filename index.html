@@ -8,6 +8,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="payday.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -35,6 +36,15 @@
             <div class="muted" id="debtProgressText">Add your starting debt to track progress.</div>
           </article>
         </div>
+
+        <article class="card payday-launch-card">
+          <div>
+            <div class="card-label">PAYDAY MODE</div>
+            <strong>Tell every new dollar where to go before it wanders off.</strong>
+            <p class="muted">Cover bills, protect spending money and your cushion, then calculate the extra debt payment that is actually safe.</p>
+          </div>
+          <button class="primary payday-launch" data-nav="payday">Run payday plan →</button>
+        </article>
 
         <div class="grid-3">
           <article class="card mini-stat-card"><span>THIS MONTH</span><strong id="monthSpend">$0</strong><small>spending</small></article>
@@ -74,6 +84,62 @@
             <button class="chip" data-xp="10">+ Extra debt payment</button>
             <button class="chip" data-xp="5">+ Stayed under budget</button>
           </div>
+        </article>
+      </section>
+
+      <section id="payday" class="page">
+        <div class="section-title"><h2>Payday Mode</h2><p>Protect what has to survive until the next paycheck, then attack debt with the rest.</p></div>
+
+        <div class="payday-step-grid">
+          <article class="card payday-input-card">
+            <div class="step-kicker">STEP 1</div>
+            <div class="card-label">WHAT JUST LANDED?</div>
+            <div class="inline-fields">
+              <label>Paycheck amount <input id="paydayAmount" type="number" min="0" step="0.01" placeholder="0.00" /></label>
+              <label>Checking balance now <input id="paydayChecking" type="number" min="0" step="0.01" /></label>
+            </div>
+            <label>Next payday <input id="paydayNextDate" type="date" /></label>
+            <label>Income source <input id="paydaySource" type="text" placeholder="Paycheck" /></label>
+            <label class="check"><input id="paydayRecordIncome" type="checkbox" /> Also record this paycheck as income in Spending</label>
+          </article>
+
+          <article class="card payday-input-card">
+            <div class="step-kicker">STEP 2</div>
+            <div class="card-label">PROTECT THE RUNWAY</div>
+            <div class="payday-protected-grid">
+              <div><span>Bills before next payday</span><strong id="paydayBillsTotal">$0</strong></div>
+              <div><span>Flexible spending reserve</span><strong id="paydayFlexibleAuto">$0</strong></div>
+              <div><span>Protected cushion</span><strong id="paydayCushion">$0</strong></div>
+            </div>
+            <label>Flexible spending until next payday <input id="paydayFlexible" type="number" min="0" step="1" /></label>
+            <label>Other planned expenses <input id="paydayOther" type="number" min="0" step="0.01" value="0" /></label>
+            <label>Extra just-in-case buffer <input id="paydayBuffer" type="number" min="0" step="1" value="0" /></label>
+            <div id="paydayBillsList" class="payday-bills-list"></div>
+          </article>
+        </div>
+
+        <article class="card payday-result-card">
+          <div class="step-kicker">STEP 3</div>
+          <div class="card-head"><div class="card-label">THE NUMBER THAT MATTERS</div><span id="paydayStatusBadge" class="tag">READY</span></div>
+          <div class="payday-hero" id="paydaySafeExtra">$0</div>
+          <div class="payday-hero-label">safe extra debt payment</div>
+          <div class="payday-waterfall" id="paydayWaterfall"></div>
+          <div id="paydayDebtAllocation" class="payday-allocation"></div>
+          <div class="payday-after-grid">
+            <div><span>Checking after debt payment</span><strong id="paydayAfterChecking">$0</strong></div>
+            <div><span>Cash still reserved</span><strong id="paydayReserved">$0</strong></div>
+            <div><span>Unallocated surplus</span><strong id="paydaySurplus">$0</strong></div>
+          </div>
+          <div class="payday-actions">
+            <button class="secondary" id="savePaydayPlan">Save plan only</button>
+            <button class="primary" id="applyPaydayPlan">I made the debt payment — apply it</button>
+          </div>
+          <p class="muted tiny payday-warning">Applying the plan reduces the debt balance and checking balance in this app. It does not move real money or mark upcoming bills paid.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div class="card-label">PAYDAY HISTORY</div><span class="muted tiny">latest first</span></div>
+          <div id="paydayHistory" class="payday-history"></div>
         </article>
       </section>
 
@@ -253,5 +319,6 @@
   </dialog>
 
   <script src="app.js"></script>
+  <script src="payday.js"></script>
 </body>
 </html>
